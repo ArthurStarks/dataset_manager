@@ -5,11 +5,10 @@ from flask_migrate import Migrate
 
 from app.models import User
 
+from .extensions import db
+from .extensions import login_manager
+from .extensions import Migrate
 
-
-db = SQLAlchemy()
-login_manager = LoginManager()
-migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
