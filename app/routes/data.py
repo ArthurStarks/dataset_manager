@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template, request
+import os
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
 from ..models import Dataset
-from ..utils import role_required
+from ..utils import allowed_file, role_required
+from app import db
+from werkzeug.utils import secure_filename
+
 
 data_bp = Blueprint('data', __name__)
 
@@ -16,36 +20,35 @@ def dashboard():
 
 
 
-@data_bp.route('/upload')
+@data_bp.route('/upload', methods=['GET', 'POST'])
 
 @login_required
 @role_required('data-scientist')
 def upload():
 
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and file.filename.endswith('.csv'):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+   if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part', 'danger')
+            return redirect(request.url)
 
-            # Perform basic EDA
-            df = pd.read_csv(filepath)
-            num_rows, num_cols = df.shape
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'danger')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename) # type: ignore
+            save_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(save_path)
 
             # Save to database
-            dataset = Dataset(
-                name=filename,
-                file_path=filepath,
-                num_rows=num_rows,
-                num_cols=num_cols,
-                upload_date=datetime.now()
-            )
+            dataset = Dataset(name=filename, path=save_path, user_id=current_user.id)
             db.session.add(dataset)
             db.session.commit()
 
-            flash('Dataset uploaded successfully!', 'success')
-            return redirect(url_for('view_datasets'))
-        else:
-            flash('Invalid file type. Please upload a CSV file.', 'danger')
-    return render_template('upload.html')
+            flash('File successfully uploaded', 'success')
+            return redirect(url_for('data.upload'))
+
+        flash('Invalid file type', 'danger')
+
+   return render_template('data/upload.html',user=current_user)

@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -13,6 +14,10 @@ from .extensions import Migrate
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../instance/config.py')
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
+    app.config['ALLOWED_EXTENSIONS'] = {'csv', 'xlsx'}
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
     login_manager.init_app(app)

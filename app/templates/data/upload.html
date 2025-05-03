@@ -44,39 +44,22 @@
 
         <div class="content-wrapper">
           <div class="content">
-            <div class="container mt-5">
-               
-                <h2>Your Uploaded Datasets</h2>
-                
-                {% if datasets %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Dataset Name</th>
-                            <th>Uploaded On</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for dataset in datasets %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ dataset.name }}</td>
-                            <td>{{ dataset.path }}</td>
-                            <td>
-                                <a href="" class="btn btn-info btn-sm">View</a>
-                                <a href="" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p>No datasets found. <a href="{{ url_for('data.upload') }}">Upload a dataset</a> to get started.</p>
+            <!-- Top Statistics -->
+            <h1>Upload Dataset</h1>
+            <form method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="file">Choose file:</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <button type="submit">Upload</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
                 {% endif %}
-            </div>
+            {% endwith %}
           </div>
         </div>
       </div>

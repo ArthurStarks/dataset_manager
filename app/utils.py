@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, redirect, url_for, flash
+from flask import current_app, request, redirect, url_for, flash
 from flask_login import current_user
 
 def role_required(role):
@@ -18,3 +18,7 @@ def role_required(role):
             return func(*args, **kwargs)
         return wrapper
     return decorator
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
