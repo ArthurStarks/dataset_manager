@@ -1,5 +1,6 @@
 import csv
 import os
+import pandas as pd
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
 from ..models import Dataset
@@ -85,3 +86,37 @@ def view_dataset(dataset_id):
 
     return render_template('data/read_file.html', csv_content=csv_content)
 
+@data_bp.route('/dataset_info/<int:dataset_id>')
+def dataset_info(dataset_id):
+    file = Dataset.query.get_or_404(dataset_id)
+   
+    file_path = os.path.join('uploads', f'{file.name}')
+
+    try:
+       
+        df = pd.read_csv(file_path)
+
+        # Collect general info
+        num_rows = df.shape[0]
+        num_columns = df.shape[1]
+        column_names = df.columns.tolist()
+        null_values = df.isnull().sum().to_dict()
+        data_types = df.dtypes.to_dict()
+
+      
+        dataset_summary = {
+            'num_rows': num_rows,
+            'num_columns': num_columns,
+            'column_names': column_names,
+            'null_values': null_values,
+            'data_types': data_types
+        }
+
+        return render_template('data/dataset_info.html', dataset_summary=dataset_summary)
+
+    except FileNotFoundError:
+        flash('File not found.', 'danger')
+        return redirect(url_for('data.dashboard'))
+    except Exception as e:
+        flash(f'Error reading dataset: {str(e)}', 'danger')
+        return redirect(url_for('data.dashboard'))

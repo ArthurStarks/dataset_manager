@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Dataset Summary</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Attribute</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td>Number of Rows</td>
+            <td>{{ dataset_summary.num_rows }}</td>
+        </tr>
+        <tr>
+            <td>Number of Columns</td>
+            <td>{{ dataset_summary.num_columns }}</td>
+        </tr>
+        <tr>
+            <td>Column Names</td>
+            <td>{{ dataset_summary.column_names | join(', ') }}</td>
+        </tr>
+        <tr>
+            <td>Null Values</td>
+            <td>
+                <ul>
+                    {% for column, null_count in dataset_summary.null_values.items() %}
+                    <li>{{ column }}: {{ null_count }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>Data Types</td>
+            <td>
+                <ul>
+                    {% for column, dtype in dataset_summary.data_types.items() %}
+                    <li>{{ column }}: {{ dtype }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
