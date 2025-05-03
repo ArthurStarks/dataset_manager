@@ -1,3 +1,4 @@
+import csv
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
@@ -52,3 +53,35 @@ def upload():
         flash('Invalid file type', 'danger')
 
    return render_template('data/upload.html',user=current_user)
+
+
+@data_bp.route('/delete/<int:dataset_id>', methods=['POST'])
+@login_required
+def delete_dataset(dataset_id):
+    dataset = Dataset.query.filter_by(id=dataset_id, user_id=current_user.id).first()
+
+    if dataset:
+        db.session.delete(dataset)
+        db.session.commit()
+        flash("Dataset deleted successfully!", "success")
+    else:
+        flash("Dataset not found or you don't have permission to delete it.", "danger")
+
+    return redirect(url_for('data.dashboard'))
+
+@data_bp.route('/dataset/<int:dataset_id>')
+@login_required
+def view_dataset(dataset_id):
+    file = Dataset.query.get_or_404(dataset_id)
+    csv_content = []
+
+    try:
+        with open(file.path, newline='', encoding='utf-8') as csvfile:
+            csv_reader = csv.reader(csvfile, delimiter=',')
+            for row in csv_reader:
+                csv_content.append(row)
+    except Exception as e:
+        return f"Error reading file: {e}", 500
+
+    return render_template('data/read_file.html', csv_content=csv_content)
+

@@ -1,3 +1,4 @@
+import datetime
 from .extensions import db
 from flask_login import UserMixin
 
@@ -12,4 +13,6 @@ class Dataset(db.Model):
     name = db.Column(db.String(150), nullable=False)
     path = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    upload_time = db.Column(db.DateTime, default=db.func.now())  # Add this field
+
     user = db.relationship('User', backref=db.backref('datasets', lazy=True))
