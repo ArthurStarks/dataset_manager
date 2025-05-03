@@ -84,7 +84,7 @@ def view_dataset(dataset_id):
     except Exception as e:
         return f"Error reading file: {e}", 500
 
-    return render_template('data/read_file.html', csv_content=csv_content)
+    return render_template('data/read_file.html', csv_content=csv_content, )
 
 @data_bp.route('/dataset_info/<int:dataset_id>')
 def dataset_info(dataset_id):
@@ -112,7 +112,7 @@ def dataset_info(dataset_id):
             'data_types': data_types
         }
 
-        return render_template('data/dataset_info.html', dataset_summary=dataset_summary)
+        return render_template('data/dataset_info.html', dataset_summary=dataset_summary,user=current_user)
 
     except FileNotFoundError:
         flash('File not found.', 'danger')

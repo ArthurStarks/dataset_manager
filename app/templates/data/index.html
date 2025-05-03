@@ -66,13 +66,13 @@
                             <td>{{ dataset.upload_time }}</td>
                             <td>
                                 
-                                <a href="{{ url_for('data.view_dataset', dataset_id=dataset.id) }}"  class="btn btn-info btn-sm" >Read</a>
-                                <a href="{{ url_for('data.dataset_info', dataset_id=dataset.id) }}" class="btn btn-primary btn-sm">
-                                    View Dataset Summary
+                                <a href="{{ url_for('data.view_dataset', dataset_id=dataset.id) }}"  class="btn btn-info btn-sm" > <i class="mdi mdi-book-open-page-variant-outline"></i>Read</a>
+                                <a href="{{ url_for('data.dataset_info', dataset_id=dataset.id) }}" class="btn btn-primary btn-sm"> <i class="mdi mdi-eye-outline"></i>
+                                     Summary
                                 </a>
                                 <form action="{{ url_for('data.delete_dataset', dataset_id=dataset.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this dataset?')">
-                                        Delete
+                                    <button type="submit" class="btn btn-danger  btn-sm" onclick="return confirm('Are you sure you want to delete this dataset?')">
+                                        <i class="mdi mdi-delete-outline"></i>  Delete
                                     </button>
                                 </form>
                         
@@ -96,8 +96,12 @@
             </div>
           </div>
         </div>
+        {% include 'data/footer.html' %}
       </div>
+   
     </div>
+
+   
 
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
