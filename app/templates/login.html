@@ -39,13 +39,11 @@
               <div class="app-brand w-100 d-flex justify-content-center border-bottom-0">
                 <a class="w-auto pl-0" href="">
                   <img src="{{ url_for('static', filename='images/logo.png') }}" width="100" height="100" alt="Mono">
-                  <span class="brand-name text-dark">DATASET MANAGER</span>
-                </a>
+ 
               </div>
             </div>
             <div class="card-body px-5 pb-5 pt-0">
 
-              <h4 class="text-dark mb-6 text-center">Sign in for free</h4>
 
               <form method="POST" action="{{ url_for('auth.login') }}">
                 <div class="row">
