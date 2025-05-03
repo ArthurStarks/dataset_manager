@@ -16,7 +16,7 @@ def login():
             login_user(user)
             return redirect(url_for('home'))  # Redirect to home or a dashboard
         flash('Invalid username or password', 'danger')
-    return render_template('auth/login.html')
+    return render_template('login.html')
 
 
 
