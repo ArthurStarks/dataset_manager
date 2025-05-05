@@ -5,6 +5,11 @@ from flask_login import current_user
 from werkzeug.security import generate_password_hash
 from app.models import User
 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
+
 def role_required(role):
     """
     Decorator to restrict access to users with specific roles.

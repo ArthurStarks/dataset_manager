@@ -112,7 +112,7 @@ def dataset_info(dataset_id):
         else:
             flash('Unsupported file format. Only CSV and XLSX are supported.', 'danger')
             return redirect(url_for('data.dashboard'))
-
+        
         # Collect general info
         num_rows = df.shape[0]
         num_columns = df.shape[1]
@@ -136,3 +136,4 @@ def dataset_info(dataset_id):
     except Exception as e:
         flash(f'Error reading dataset: {str(e)}', 'danger')
         return redirect(url_for('data.dashboard'))
+    
