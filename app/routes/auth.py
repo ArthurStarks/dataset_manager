@@ -16,7 +16,11 @@ def login():
            session.clear()
            login_user(user)
            session.modified = True
-           return redirect(url_for('data.dashboard'))  # Redirect to home or a dashboard
+
+           if (user.role == "datascientist") :
+             return redirect(url_for('data.dashboard'))  # Redirect to home or a dashboard
+           else : 
+               return redirect(url_for('admin.dashboard')) 
         flash('Invalid username or password', 'danger')
     return render_template('login.html')
 

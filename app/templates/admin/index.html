@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dataset Manager App - All your data in one place</title>
+
+    <!-- theme meta -->
+    <meta name="theme-name" content="mono" />
+
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
+    <link href="{{ url_for('static', filename='plugins/material/css/materialdesignicons.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='plugins/simplebar/simplebar.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='plugins/nprogress/nprogress.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='plugins/toaster/toastr.min.css') }}" rel="stylesheet" />
+    <link id="main-css-href" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link href="{{ url_for('static', filename='images/logo.png') }}" rel="shortcut icon" />
+
+    <script src="{{ url_for('static', filename='plugins/nprogress/nprogress.js') }}"></script>
+  </head>
+  
+  <body class="navbar-fixed sidebar-fixed" id="body">
+    <script>
+      NProgress.configure({ showSpinner: false });
+      NProgress.start();
+    </script>
+
+   
+    
+    <div class="wrapper">
+      <!-- Left Sidebar -->
+      {% include 'data/aside.html' %}
+
+      <div class="page-wrapper">
+        <!-- Header -->
+        {% include 'data/header.html'  %}
+
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="container mt-5 card card-default card-mini">
+               
+                <h2>ALL Users</h2>
+                
+                {% if users %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ user.name }}</td>
+                      
+                            <td>
+                                
+                             
+                                <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger  btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">
+                                        <i class="mdi mdi-delete-outline"></i>  Delete
+                                    </button>
+                                </form>
+                        
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+               
+
+
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            </div>
+          </div>
+        </div>
+        {% include 'data/footer.html' %}
+      </div>
+   
+    </div>
+
+   
+
+    <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/simplebar/simplebar.min.js') }}"></script>
+    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+    <script src="{{ url_for('static', filename='plugins/apexcharts/apexcharts.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script>
+      jQuery(document).ready(function() {
+        jQuery('input[name="dateRange"]').daterangepicker({
+          autoUpdateInput: false,
+          singleDatePicker: true,
+          locale: {
+            cancelLabel: 'Clear'
+          }
+        });
+        jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+          jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+        });
+        jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+          jQuery(this).val('');
+        });
+      });
+    </script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="{{ url_for('static', filename='plugins/toaster/toastr.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mono.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+  </body>
+</html>
