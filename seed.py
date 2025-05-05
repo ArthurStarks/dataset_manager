@@ -6,14 +6,15 @@ def seed_admin():
     app = create_app()
     with app.app_context():
       
-        if User.query.filter_by(username="admin").first():
+        if User.query.filter_by(username="admin1").first():
             print("Admin user already exists.")
             return
 
     
         admin_user = User(
-            username="admin",
-            password=generate_password_hash("adminpassword", method="pbkdf2:sha256")
+            username="admin1",
+            role="admin",
+            password=generate_password_hash("adminpassword1", method="pbkdf2:sha256")
         )
 
         # Add and commit the user to the database

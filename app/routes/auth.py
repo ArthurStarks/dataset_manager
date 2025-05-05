@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, session, url_for, flash, request
+from flask import Blueprint, app, render_template, redirect, session, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from ..models import User
@@ -7,6 +7,7 @@ from app import db
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
+
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -17,7 +18,7 @@ def login():
            login_user(user)
            session.modified = True
 
-           if (user.role == "datascientist") :
+           if (user.role == "data-scientist") :
              return redirect(url_for('data.dashboard'))  # Redirect to home or a dashboard
            else : 
                return redirect(url_for('admin.dashboard')) 
@@ -68,4 +69,4 @@ def register():
 @login_required
 def logout():
    logout_user()
-   return redirect("/login") 
+   return redirect("auth.login") 

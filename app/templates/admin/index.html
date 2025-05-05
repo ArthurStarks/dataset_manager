@@ -36,11 +36,11 @@
     
     <div class="wrapper">
       <!-- Left Sidebar -->
-      {% include 'data/aside.html' %}
+      {% include 'admin/aside.html' %}
 
       <div class="page-wrapper">
         <!-- Header -->
-        {% include 'data/header.html'  %}
+        {% include 'admin/header.html'  %}
 
         <div class="content-wrapper">
           <div class="content">
@@ -54,6 +54,7 @@
                         <tr>
                             <th>#</th>
                             <th>User Name</th>
+                            <th>Role</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -61,8 +62,8 @@
                         {% for user in users %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ user.name }}</td>
-                      
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.role }}</td>
                             <td>
                                 
                              
@@ -77,7 +78,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
-               
+                {% else %}
+                <p>No Users found. </p>
+                {% endif %}
 
 
                 {% with messages = get_flashed_messages(with_categories=True) %}
@@ -90,7 +93,7 @@
             </div>
           </div>
         </div>
-        {% include 'data/footer.html' %}
+        {% include 'admin/footer.html' %}
       </div>
    
     </div>
