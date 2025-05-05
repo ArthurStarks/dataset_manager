@@ -74,27 +74,44 @@ def delete_dataset(dataset_id):
 @login_required
 def view_dataset(dataset_id):
     file = Dataset.query.get_or_404(dataset_id)
+    file_extension = os.path.splitext(file.path)[1].lower()  # Get the file extension
     csv_content = []
 
     try:
-        with open(file.path, newline='', encoding='utf-8') as csvfile:
-            csv_reader = csv.reader(csvfile, delimiter=',')
-            for row in csv_reader:
-                csv_content.append(row)
+        if file_extension == '.csv':
+            # Read CSV file
+            with open(file.path, newline='', encoding='utf-8') as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=',')
+                for row in csv_reader:
+                    csv_content.append(row)
+        elif file_extension in ['.xls', '.xlsx']:
+            # Read Excel file using pandas
+            df = pd.read_excel(file.path)
+            csv_content = df.values.tolist()  
+            csv_content.insert(0, df.columns.tolist())  
+        else:
+            return "Unsupported file type", 400
     except Exception as e:
         return f"Error reading file: {e}", 500
 
-    return render_template('data/read_file.html', csv_content=csv_content, )
+    return render_template('data/read_file.html', csv_content=csv_content)
 
 @data_bp.route('/dataset_info/<int:dataset_id>')
+@login_required
 def dataset_info(dataset_id):
     file = Dataset.query.get_or_404(dataset_id)
    
     file_path = os.path.join('uploads', f'{file.name}')
 
     try:
-       
-        df = pd.read_csv(file_path)
+        # Determine file extension and load dataset accordingly
+        if file.name.endswith('.csv'):
+            df = pd.read_csv(file_path)
+        elif file.name.endswith('.xlsx'):
+            df = pd.read_excel(file_path)
+        else:
+            flash('Unsupported file format. Only CSV and XLSX are supported.', 'danger')
+            return redirect(url_for('data.dashboard'))
 
         # Collect general info
         num_rows = df.shape[0]
@@ -103,7 +120,6 @@ def dataset_info(dataset_id):
         null_values = df.isnull().sum().to_dict()
         data_types = df.dtypes.to_dict()
 
-      
         dataset_summary = {
             'num_rows': num_rows,
             'num_columns': num_columns,
@@ -112,7 +128,7 @@ def dataset_info(dataset_id):
             'data_types': data_types
         }
 
-        return render_template('data/dataset_info.html', dataset_summary=dataset_summary,user=current_user)
+        return render_template('data/dataset_info.html', dataset_summary=dataset_summary, user=current_user)
 
     except FileNotFoundError:
         flash('File not found.', 'danger')
