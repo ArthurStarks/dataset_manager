@@ -1,6 +1,9 @@
 from functools import wraps
-from flask import current_app, request, redirect, url_for, flash
+from app import  db
+from flask import app, current_app, request, redirect, url_for, flash
 from flask_login import current_user
+from werkzeug.security import generate_password_hash
+from app.models import User
 
 def role_required(role):
     """
@@ -14,7 +17,7 @@ def role_required(role):
                 return redirect(url_for('auth.login'))
             if current_user.role != role:
                 flash("You do not have permission to access this page.", "danger")
-                return redirect(url_for('main.index'))
+                return redirect(url_for("auth.login"))
             return func(*args, **kwargs)
         return wrapper
     return decorator
